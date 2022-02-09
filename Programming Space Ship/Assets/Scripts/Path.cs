@@ -7,6 +7,7 @@ public class Path : MonoBehaviour
     public List<Vector3> waypoints;
     public bool IsLooped;
     public float distance;
+    public float approachDistance;
     private int i = 1;
 
     private void Awake()
