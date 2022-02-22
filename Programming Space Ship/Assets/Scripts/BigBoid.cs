@@ -29,6 +29,8 @@ public class BigBoid : MonoBehaviour
     public float PersueSpeed = 20;
     public Transform PersueTarget;
 
+    public bool isOffset;
+    public Offset offset;
     public Transform ModelCollision;
 
     // Start is called before the first frame update
@@ -101,33 +103,40 @@ public class BigBoid : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(IsFollowPath)
+        if (isOffset)
         {
-            IsPersuing = false;
-            FollowPath();
-            Approach();
+            offset.enabled=true;
         }
-        
-        if(IsPersuing)
+        else
         {
-            IsFollowPath = false;
-            Persue();
+            offset.enabled = false;
+            if (IsFollowPath)
+            {
+                IsPersuing = false;
+                FollowPath();
+                Approach();
+            }
+
+            if (IsPersuing)
+            {
+                IsFollowPath = false;
+                Persue();
+            }
+            force = Calculate();
+            acceleration = force / mass;
+            velocity += acceleration * Time.deltaTime;
+            transform.position += velocity * Time.deltaTime;
+
+            speed = velocity.magnitude;
+
+            Debug.Log(BankValue());
+
+            if (speed > 0)
+            {
+
+                Vector3 tempUp = Vector3.Lerp(transform.up, Vector3.up + (acceleration * BankValue()), Time.deltaTime * 3.0f);
+                transform.LookAt(transform.position + velocity, tempUp);
+            }
         }
-        force = Calculate();
-        acceleration = force / mass;
-        velocity += acceleration * Time.deltaTime;
-        transform.position += velocity * Time.deltaTime;
-
-        speed = velocity.magnitude;
-
-        Debug.Log(BankValue());
-
-        if (speed > 0)
-        {
-
-            Vector3 tempUp = Vector3.Lerp(transform.up, Vector3.up + (acceleration * BankValue()), Time.deltaTime * 3.0f);
-            transform.LookAt(transform.position + velocity, tempUp);
-        }
-
     }
 }

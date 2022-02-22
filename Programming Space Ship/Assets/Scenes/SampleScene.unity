@@ -163,6 +163,7 @@ GameObject:
   m_Component:
   - component: {fileID: 360440207}
   - component: {fileID: 360440206}
+  - component: {fileID: 360440208}
   m_Layer: 0
   m_Name: Boid
   m_TagString: Untagged
@@ -199,6 +200,8 @@ MonoBehaviour:
   IsPersuing: 0
   PersueSpeed: 20
   PersueTarget: {fileID: 0}
+  isOffset: 0
+  offset: {fileID: 360440208}
   ModelCollision: {fileID: 0}
 --- !u!4 &360440207
 Transform:
@@ -208,13 +211,27 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 360440205}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.936648, y: 0.322896, z: 10.8}
+  m_LocalPosition: {x: 1, y: 0, z: 10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1111684145}
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &360440208
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 360440205}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87abb25ebac8b6b46b90564c7e175706, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  leader: {fileID: 0}
+  lerpValue: 0
 --- !u!1 &365991318
 GameObject:
   m_ObjectHideFlags: 0
@@ -547,6 +564,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: f1f5e745b3e5ddf48a6d83324fa8d480, type: 3}
   m_PrefabInstance: {fileID: 1412400902}
   m_PrefabAsset: {fileID: 0}
+--- !u!4 &1322678682 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 249fbebbd0cfc2b40ac6548b1d73f71a, type: 3}
+  m_PrefabInstance: {fileID: 2094303524}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1412400902
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -703,6 +725,57 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0953767fb5ac1ff4a82af77472f9dddc, type: 3}
+--- !u!1 &2007983321 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 0953767fb5ac1ff4a82af77472f9dddc, type: 3}
+  m_PrefabInstance: {fileID: 2028072425}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2007983322
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2007983321}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87abb25ebac8b6b46b90564c7e175706, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  leader: {fileID: 360440207}
+  lerpValue: 0.025
+--- !u!114 &2007983326
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2007983321}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b37392811cf8bc7438e620cce29885b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  acceleration: {x: 0, y: 0, z: 0}
+  velocity: {x: 0, y: 0, z: 0}
+  force: {x: 0, y: 0, z: 0}
+  speed: 0
+  banking: 0
+  bankRatio: 0.01
+  mass: 1
+  maxSpeed: 10
+  approachModifier: 2
+  seekEnabled: 1
+  seekTarget: {fileID: 1322678682}
+  IsFollowPath: 0
+  FollowSpeed: 10
+  PathTarget: {fileID: 0}
+  IsPersuing: 0
+  PersueSpeed: 20
+  PersueTarget: {fileID: 0}
+  isOffset: 1
+  offset: {fileID: 2007983322}
+  ModelCollision: {fileID: 0}
 --- !u!1001 &2028072425
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -716,15 +789,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0953767fb5ac1ff4a82af77472f9dddc, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 15.67
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0953767fb5ac1ff4a82af77472f9dddc, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 5.3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0953767fb5ac1ff4a82af77472f9dddc, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 2.7
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0953767fb5ac1ff4a82af77472f9dddc, type: 3}
       propertyPath: m_LocalRotation.w
