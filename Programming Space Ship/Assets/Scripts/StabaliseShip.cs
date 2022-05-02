@@ -16,8 +16,8 @@ public class StabaliseShip : MonoBehaviour
         if(IsStabalised)
         {
             transform.localPosition = Vector3.Lerp(transform.localPosition, Vector3.zero, LerpValue);
-            LookRot = Quaternion.LookRotation(ParentCenter.position, Vector3.up);
-            transform.localRotation = Quaternion.Lerp(transform.localRotation, LookRot, SlerpValue);
+            transform.LookAt(ParentCenter);
+            
         }
         
     }
