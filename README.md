@@ -1,5 +1,5 @@
 # Programming-Space-Assignment
-Name: Séamus Maher
+Name: Conor Mulgrew
 
 Student Number: C19905292
 
@@ -21,198 +21,166 @@ For my project I recreated the final boss from Star Fox (1993) using Unity AI
 
 # How It Works
 
-For the Visualizer first we get data from the audio using GetSpectrumData in our audio data script
+Ship Movement
 ```
-[RequireComponent(typeof(AudioSource))] //to add audio componant to object this is connected to 
-
-public class AudioData : MonoBehaviour
+public class BetterBoid : MonoBehaviour
 {
-    AudioSource _audioSource;
-    public static float[] _samples = new float[8192]; //can be accessed from any script
 
-        void Start()
+    public Vector3 acceleration;
+    public Vector3 velocity;
+    public Vector3 force;
+    public float speed, banking;
+    public float bankRatio = 0.01f;
+    public float mass = 1;
+    public float maxSpeed = 10;
+    public float approachModifier = 2;
+
+    private Path path;
+    private int index;
+
+    public bool seekEnabled = true;
+    public Transform seekTarget;
+
+
+    // Start is called before the first frame update
+    void Start()
     {
-        _audioSource = GetComponent<AudioSource>();
+        
+    }
+
+    public Vector3 Seek(Vector3 target)
+    {
+        Vector3 desired = (target - transform.position).normalized * maxSpeed;
+        return desired - velocity;
+    }
+
+    Vector3 Calculate()
+    {
+
+        force = Vector3.zero;
+        if (seekEnabled)
+        {
+            force += Seek(seekTarget.position);
+        }
+        return force;
     }
 
     // Update is called once per frame
     void Update()
     {
-        GetAudioData(); 
-    }
+        force = Calculate();
+        acceleration = force / mass;
+        velocity += acceleration * Time.deltaTime;
+        transform.position += velocity * Time.deltaTime;
 
-    void GetAudioData()
-    {
-        _audioSource.GetSpectrumData(_samples, 0, FFTWindow.Hamming);// gets data from audio source, 512 samples, fft window seperates frequencies, Hamming used to reduce leakage
+        speed = velocity.magnitude;
+
+        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(Seek(seekTarget.position), Vector3.up), 0.01f);
     }
 }
 ```
-
-we then use this data in our Visualizer script to change to scale of each cube relative to each sample, the cube is called from a prefab, each cubes scale is relative to an audio sample found in our audio data script
-
-```
-public class visualizer : MonoBehaviour
+  
+  Spawn Script to create projectiles
+    
+    public class Spawner : MonoBehaviour
 {
-    public GameObject _cubePrefab;
-    GameObject[] _cube = new GameObject[512];
-    public float _maxscale;
 
+    public GameObject SpawnObject;
 
+    public float firerate;
+    private float tick;
+    // Start is called before the first frame update
     void Start()
     {
-
-        for (int i = 0; i < 512; i++)
-        {
-            Quaternion _rot = Quaternion.AngleAxis(i * -703125f, Vector3.forward);//rotates each cube
-            GameObject _instanceCube = (GameObject)Instantiate(_cubePrefab, transform.position, _rot);//instastiates each cube
-            _instanceCube.transform.position = this.transform.position;
-            _instanceCube.transform.parent = this.transform;
-            _instanceCube.name = "cube" + i;
-            this.transform.eulerAngles = new Vector3(0, -0.703125f * i, 0);
-            _instanceCube.transform.position = Vector3.forward * 100;
-
-            _cube[i] = _instanceCube;
-        }
-     
         
     }
 
-    
+    // Update is called once per frame
     void Update()
     {
-        for (int i = 0; i < 512 ; i++)
+        tick += Time.deltaTime;
+        if (tick >= firerate)
         {
-            if (_cube != null)
-            {
-                _cube[i].transform.localScale = new Vector3(10, AudioData._samples [i] * _maxscale, 10);//changes the size of each cube relative to the samples frequency
-            }
+            Instantiate(SpawnObject, transform.position, Quaternion.identity);
+            tick = 0;
         }
     }
 }
-```
   
-  the prefab has a color randomizer script
-    
-    void Start()
-    {
-        GetComponent<Renderer>().material.color = Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f); //sets random color of material on the cube
-    }
-  
-  the terrain uses perlin noise to generate a random noise map 
+  How the ship avoids objects
   ```
   
-  public class perlinNoise : MonoBehaviour
+  public class PushPlayerAway : MonoBehaviour
 {
-   
-    public int height = 256;
-    public int depth = 20;
-    public int width = 256;
 
-    public float scale = 20f;
+    public Transform Player;
 
-    public float offsetx = 100f;
-    public float offsety = 100f;
-    public float Speed = 1f;
+    public float MinDistance, CloseDistance;
+
+    public float force,traction,CloseMultiplier;
 
     
-
-     void Start()
+    private Vector3 PushDirection;
+    private Quaternion LookRot;
+    private StabaliseShip _ss;
+    // Start is called before the first frame update
+    void Start()
     {
-        
+        _ss = FindObjectOfType<StabaliseShip>();
+        Player = GameObject.Find("Arwing").transform;
     }
 
+    // Update is called once per frame
     void Update()
     {
-        Terrain terrain = GetComponent<Terrain>();
-        terrain.terrainData = GenerateTerrain(terrain.terrainData);
-
-        if (Input.GetAxis("Mouse ScrollWheel")<0) //changes speed and direction of terrain
+        PushDirection = (transform.position - Player.position).normalized;
+        Vector3 Inverted = new Vector3(PushDirection.x, PushDirection.y, -PushDirection.z);
+        if(Vector3.Distance(transform.position, Player.position) <= MinDistance)
         {
-            Speed += 1;
-        }
-
-        if (Input.GetAxis("Mouse ScrollWheel") > 0)
-        {
-            Speed -= 1;
-        }
-
-
-        offsety += Time.deltaTime * Speed; // moves the terrain in the y direction relative to the speed by time
-
-
-    }
-
-    TerrainData GenerateTerrain (TerrainData terrainData)
-    {
-        terrainData.heightmapResolution = width + 1;
-        terrainData.size = new Vector3(width, depth, height);
-
-        terrainData.SetHeights(0, 0, GenerateHeights());
-        return terrainData;
-    }
-
-    float[,] GenerateHeights()
-    {
-        float[,] heights = new float[width, height];
-        for(int x = 0; x < width; x++)
-        {
-            for (int y = 0; y < height; y++)
+            _ss.IsStabalised = false;
+            if(Vector3.Distance(transform.position, Player.position) <= CloseDistance)
             {
-                heights[x, y] = CalHeight(x, y);
+                force += traction*CloseMultiplier * Time.deltaTime;
             }
+            else
+            {
+                force += traction * Time.deltaTime;
+            }
+            LookRot = Quaternion.LookRotation(-PushDirection, Vector3.up);
         }
+        else
+        {
+            
+            force -= traction * Time.deltaTime;
+            if (force <= 0)
+            {
+                force = 0;
+                _ss.IsStabalised = true;
+            }
+            LookRot = Quaternion.LookRotation(Inverted, Vector3.up);
+        }
+        
+        Player.position -= PushDirection * force;
 
-        return heights;
+
+        Player.rotation = Quaternion.Lerp(Player.rotation, LookRot, traction / 5f);
     }
-
-    
-
-    float CalHeight(int x, int y)
-    {
-        float xCoord = (float) x / width * scale + offsetx; 
-        float yCoord = (float) y / height * scale + offsety;
-
-        return Mathf.PerlinNoise(xCoord, yCoord);//generates a random value between 0 and 1 on every point on the terrain to give use our heights and depths
-    }
-
-    
-   
 }
 ```
 
-Camera Movement around the terrain
+How Scenes are moved between
 
 ```
-public class cameraMovement : MonoBehaviour
+public class SceneMover : MonoBehaviour
 {
-    public Camera _cam;
-    public Transform _target;
-    public float _distanceToTarget = 10;
-
-    private Vector3 previousPosition;
-
-    void Update()
+    public int index;
+    
+    private void OnTriggerEnter(Collider other)
     {
-        if (Input.GetMouseButtonDown(0))
+        if(other.gameObject.tag=="Player")
         {
-            previousPosition = _cam.ScreenToViewportPoint(Input.mousePosition); // this sets up the camera 
-        }
-        else if (Input.GetMouseButton(0))
-        {
-            Vector3 newPosition = _cam.ScreenToViewportPoint(Input.mousePosition);
-            Vector3 direction = previousPosition - newPosition;
-
-            float rotationAroundYAxis = -direction.x * 180; // camera moves horizontally
-            float rotationAroundXAxis = direction.y * 180; // camera moves vertically
-
-            _cam.transform.position = _target.position;
-
-            _cam.transform.Rotate(new Vector3(1, 0, 0), rotationAroundXAxis);
-            _cam.transform.Rotate(new Vector3(0, 1, 0), rotationAroundYAxis, Space.World);// rotates relative to the worlds y axis 
-
-            _cam.transform.Translate(new Vector3(0, 0, -_distanceToTarget));
-
-            previousPosition = newPosition;
+            
+            SceneManager.LoadScene(index);
         }
     }
 }
