@@ -190,11 +190,23 @@ public class SceneMover : MonoBehaviour
    
   | Class | Source |
   | ----- | ----- |
-  | perlinNoise.cs | Modified from [source](https://www.youtube.com/watch?v=bG0uEXV6aHQ) |
-  | color.cs | self written |
-  | visualizer.cs | Modified from [reference](https://docs.unity3d.com/ScriptReference/Object.Instantiate.html) and [reference](https://docs.unity3d.com/ScriptReference/Quaternion.html) |
-  | AudioData.cs | modified from [reference](https://docs.unity3d.com/ScriptReference/AudioSource.GetSpectrumData.html) |
-  | cameraMovment.cs | taken from [reference](https://www.emmaprats.com/p/how-to-rotate-the-camera-around-an-object-in-unity3d/) |
+  | AndrossHealth.cs | self written |
+  | AndrossJectiles.cs | self written |
+  | BetterBoid.cs | Modified from [source](https://github.com/skooter500/GE2-2021-2022/blob/master/GE2%202022/Assets/BigBoid.cs) |
+  | BigBoid.cs | Taken from [source](https://github.com/skooter500/GE2-2021-2022/blob/master/GE2%202022/Assets/BigBoid.cs) |
+  | CollideJectile.cs | self written |
+  | Explosion.cs | self written |
+  | Laser.cs | self written |
+  | MoveCylander.cs | self written |
+  | Offset.cs | self written |
+  |PlaySoundsOverScenes.cs| Taken from [source](https://answers.unity.com/questions/1260393/make-music-continue-playing-through-scenes.html) |
+  | PushPlayerAway.cs | self written |
+  | Path.cs |Modified from [source](https://github.com/skooter500/GE2-2021-2022/blob/master/GE2%202022/Assets/Path.cs) |
+  | SceneMover.cs | self written |  
+  | spin.cs | self written |
+  | StabaliseShip.cs | self written |
+  | TriggerAlarm.cs | self written |
+ 
   
   | Asset | Source |
   | ----- | ----- |
