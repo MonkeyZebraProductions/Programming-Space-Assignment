@@ -19,12 +19,14 @@ public class PushPlayerAway : MonoBehaviour
     void Start()
     {
         _ss = FindObjectOfType<StabaliseShip>();
+        Player = GameObject.Find("Arwing").transform;
     }
 
     // Update is called once per frame
     void Update()
     {
         PushDirection = (transform.position - Player.position).normalized;
+        Vector3 Inverted = new Vector3(PushDirection.x, PushDirection.y, -PushDirection.z);
         if(Vector3.Distance(transform.position, Player.position) <= MinDistance)
         {
             _ss.IsStabalised = false;
@@ -40,18 +42,19 @@ public class PushPlayerAway : MonoBehaviour
         }
         else
         {
-            _ss.IsStabalised = true;
+            
             force -= traction * Time.deltaTime;
-            if (force < 0)
+            if (force <= 0)
             {
                 force = 0;
+                _ss.IsStabalised = true;
             }
-            
+            LookRot = Quaternion.LookRotation(Inverted, Vector3.up);
         }
         
         Player.position -= PushDirection * force;
 
 
-        Player.rotation = Quaternion.Lerp(Player.rotation, LookRot, traction / 10f);
+        Player.rotation = Quaternion.Lerp(Player.rotation, LookRot, traction / 5f);
     }
 }

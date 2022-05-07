@@ -4,5 +4,26 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Actual Scenes/Opening Tunnel Scene.unity
+    guid: 4c65c12b22a450041b2122896ac253e0
+  - enabled: 1
+    path: Assets/Scenes/Actual Scenes/TriggerAlarm.unity
+    guid: db101f3b31c08fc41b1f4ffbbb4ed268
+  - enabled: 1
+    path: Assets/Scenes/Actual Scenes/Compactors.unity
+    guid: 27f072aa4fd1cd349ac3d2f6c1b42e3a
+  - enabled: 1
+    path: Assets/Scenes/Actual Scenes/Escape from Explosion.unity
+    guid: cdec46e1cf6239348ba935374856f7d8
+  - enabled: 1
+    path: Assets/Scenes/Actual Scenes/EnterAndross.unity
+    guid: 483d443b8d0534d4fab2c777e7df2823
+  - enabled: 1
+    path: Assets/Scenes/Actual Scenes/Andross Fight.unity
+    guid: ffa1e13eed9c0f44685a24a1f347d64f
+  - enabled: 1
+    path: Assets/Scenes/Actual Scenes/AndrossExplosion.unity
+    guid: f930a41dd897d1840807cf49609d7584
   m_configObjects: {}

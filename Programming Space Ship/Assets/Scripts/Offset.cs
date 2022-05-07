@@ -19,6 +19,6 @@ public class Offset : MonoBehaviour
     public void Update()
     {
         transform.position =Vector3.Lerp(transform.position,leader.TransformPoint(OffsetVector),lerpValue);
-        transform.rotation = Quaternion.Lerp(transform.rotation,leader.rotation,lerpValue);
+        //transform.rotation = Quaternion.Lerp(transform.rotation,leader.rotation,lerpValue);
     }
 }
