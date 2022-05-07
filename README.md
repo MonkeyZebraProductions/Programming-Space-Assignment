@@ -9,7 +9,7 @@ Class Group: Game Engines 2, Game Design
 
 For my project I recreated the final boss from Star Fox (1993) using Unity AI
 
-![image](https://user-images.githubusercontent.com/55447839/146017361-fde3f49e-a70d-4370-be53-a38154978911.png)
+![image](https://github.com/MonkeyZebraProductions/Programming-Space-Assignment/blob/main/Capture.PNG)
 
 # Instructions
 
